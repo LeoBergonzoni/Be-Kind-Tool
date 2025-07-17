@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Con la gentilezza si ottiene tutto</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #f0f4f8;
+      color: #333;
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #4a7c59;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 1rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      resize: vertical;
+      background: #fff;
+    }
+    button {
+      margin-top: 1rem;
+      display: inline-flex;
+      align-items: center;
+      padding: 0.7rem 1.2rem;
+      font-size: 1rem;
+      background-color: #a3d2ca;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background-color: #92c6bc;
+    }
+    .output {
+      margin-top: 2rem;
+      background-color: #ffffff;
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      position: relative;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #f7d6e0;
+      border: none;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Con la gentilezza si ottiene tutto 🌸</h1>
+
+  <label for="userInput"><strong>Scrivi qui sotto quello che vuoi comunicare, come ti viene di getto.</strong></label>
+  <textarea id="userInput" placeholder="Es: Non sopporto il tuo modo di fare!" required></textarea>
+
+  <button id="beKindBtn">🕊️ Be Kind</button>
+
+  <div id="outputContainer" class="output" style="display: none;">
+    <button class="copy-btn" onclick="copyText()">📋 Copia</button>
+    <p id="responseText"></p>
+  </div>
+
+  <script>
+    const beKindBtn = document.getElementById('beKindBtn');
+    const outputContainer = document.getElementById('outputContainer');
+    const responseText = document.getElementById('responseText');
+
+    beKindBtn.addEventListener('click', async () => {
+      const userInput = document.getElementById('userInput').value.trim();
+      if (!userInput) return alert('Scrivi prima una frase!');
+
+      const prompt = `Riformula questa frase: "${userInput}" in maniera gentile, corretta e professionale, in modo che chi la legge sia invogliato ad essere d’accordo con te.`;
+
+      try {
+        const res = await fetch('/.netlify/functions/kind-rewrite', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        responseText.textContent = data.result;
+        outputContainer.style.display = 'block';
+      } catch (error) {
+        responseText.textContent = 'Errore nella comunicazione con l’intelligenza artificiale.';
+        outputContainer.style.display = 'block';
+      }
+    });
+
+    function copyText() {
+      navigator.clipboard.writeText(responseText.textContent);
+      alert('Frase copiata negli appunti!');
+    }
+  </script>
+</body>
+</html>
