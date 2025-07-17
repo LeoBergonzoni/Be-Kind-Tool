@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "openai": "^5.10.1"
+  },
+  "devDependencies": {
+    "netlify-cli": "^22.3.0"
   }
 }
