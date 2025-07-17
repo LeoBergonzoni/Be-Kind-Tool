@@ -1,16 +1,14 @@
-const { Configuration, OpenAIApi } = require("openai");
+const OpenAI = require("openai");
 
 exports.handler = async (event) => {
   try {
     const { prompt } = JSON.parse(event.body);
 
-    const configuration = new Configuration({
+    const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
 
-    const openai = new OpenAIApi(configuration);
-
-    const completion = await openai.createChatCompletion({
+    const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
         {
@@ -25,8 +23,9 @@ exports.handler = async (event) => {
       temperature: 0.7,
     });
 
-    const response = completion.data.choices[0].message.content.trim();
-    console.log('RISPOSTA GREZZA:', JSON.stringify(completion.data));
+    console.log("Risposta da OpenAI:", JSON.stringify(completion, null, 2));
+
+    const response = completion.choices[0].message.content.trim();
 
     return {
       statusCode: 200,
